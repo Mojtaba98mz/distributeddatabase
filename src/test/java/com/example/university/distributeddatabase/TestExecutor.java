@@ -50,7 +50,7 @@ public class TestExecutor {
         int i = 1;
         for (List<Integer> arrayList : arrayLists) {
             executor.execute(
-                    new SampleSort(arrayList, i));
+                    new PartOFList(arrayList, i));
             i++;
         }
     }
