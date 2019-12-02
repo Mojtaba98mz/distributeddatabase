@@ -1,15 +1,16 @@
 package com.example.university.distributeddatabase.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MergeSort {
-    private ArrayList<Integer> inputArray;
+    private List<Integer> inputArray;
 
-    public ArrayList<Integer> getSortedArray() {
+    public List<Integer> getSortedArray() {
         return inputArray;
     }
 
-    public MergeSort(ArrayList<Integer> inputArray){
+    public MergeSort(List<Integer> inputArray){
         this.inputArray = inputArray;
     }
 
