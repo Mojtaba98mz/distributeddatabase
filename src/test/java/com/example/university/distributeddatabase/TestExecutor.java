@@ -38,13 +38,11 @@ public class TestExecutor {
     @Test
     public void test_runIncreasePoolSize() throws Exception {
         ArrayList<Integer> unsortedArray = Utils.getRandomNumbers();
-        MergeSort ms = new MergeSort(unsortedArray);
         ArrayList<List<Integer>> arrayLists = new ArrayList<>();
         arrayLists.add(unsortedArray.subList(0, 250));
         arrayLists.add(unsortedArray.subList(250, 500));
         arrayLists.add(unsortedArray.subList(500, 750));
         arrayLists.add(unsortedArray.subList(750, 1000));
-
         ExecutorService executor = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors() + 1);
         int i = 1;
