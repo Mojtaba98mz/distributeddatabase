@@ -9,10 +9,6 @@ import java.util.LinkedList;
  *
  */
 public class Executor {
-
-
-
-
 	/**
 	 * Holds the thread pool.
 	 */
