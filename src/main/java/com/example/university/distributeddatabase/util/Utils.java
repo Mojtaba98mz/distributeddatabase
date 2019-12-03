@@ -9,7 +9,7 @@ public class Utils {
 
     static {
         Random random = new Random();
-        randomNumbers = (ArrayList<Integer>) random.ints(0, 1000).limit(1000).boxed().collect(Collectors.toList());
+        randomNumbers = (ArrayList<Integer>) random.ints(0, 1000).limit(100000).boxed().collect(Collectors.toList());
     }
 
     public static ArrayList<Integer> getRandomNumbers() {
