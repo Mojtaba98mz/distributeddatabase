@@ -3,11 +3,20 @@ package com.example.university.distributeddatabase.util;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Utils {
-    public static ArrayList<Integer> getRandomNumbers() {
+    private static ArrayList<Integer> randomNumbers;
+
+    static {
         Random random = new Random();
-        return (ArrayList<Integer>) random.ints(0, 1000).limit(1000).boxed().collect(Collectors.toList());
+        randomNumbers = (ArrayList<Integer>) random.ints(0, 1000).limit(1000).boxed().collect(Collectors.toList());
+    }
+
+    public static ArrayList<Integer> getRandomNumbers() {
+        return randomNumbers;
+    }
+
+    public static int coreNumbers() {
+        return Runtime.getRuntime().availableProcessors();
     }
 }
