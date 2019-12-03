@@ -30,12 +30,9 @@ public class ParallelSort {
 
         for (int i = 0; i < core; i++) {
             int finalI = i;
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    MergeSort mergeSort = new MergeSort(dividedNumbers.get(finalI));
-                    mergeSort.sortGivenArray();
-                }
+            Runnable runnable = () -> {
+                MergeSort mergeSort = new MergeSort(dividedNumbers.get(finalI));
+                mergeSort.sortGivenArray();
             };
             Thread thread = new Thread(runnable, "Thread-" + i);
             thread.start();
