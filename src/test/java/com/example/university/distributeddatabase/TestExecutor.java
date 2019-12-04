@@ -22,34 +22,41 @@
 
 package com.example.university.distributeddatabase;
 
-import com.example.university.distributeddatabase.util.Executor;
-import com.example.university.distributeddatabase.util.MergeSort;
+import com.example.university.distributeddatabase.util.MergeKSortedArrays;
 import com.example.university.distributeddatabase.util.Utils;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class TestExecutor {
+
     @Test
-    public void test_runIncreasePoolSize() throws Exception {
-        ArrayList<Integer> unsortedArray = Utils.getRandomNumbers();
-        ArrayList<List<Integer>> arrayLists = new ArrayList<>();
-        arrayLists.add(unsortedArray.subList(0, 250));
-        arrayLists.add(unsortedArray.subList(250, 500));
-        arrayLists.add(unsortedArray.subList(500, 750));
-        arrayLists.add(unsortedArray.subList(750, 1000));
-        ExecutorService executor = Executors.newFixedThreadPool(
-                Runtime.getRuntime().availableProcessors() + 1);
-        int i = 1;
-        for (List<Integer> arrayList : arrayLists) {
-            executor.execute(
-                    new PartOFList(arrayList, i));
-            i++;
+    public void InvokeAllDemo() {
+        try {
+            ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            int availableProcessors = Runtime.getRuntime().availableProcessors();
+            ArrayList<Integer> unsortedArray = Utils.getRandomNumbers();
+            ArrayList<List<Integer>> arrayListsDivided = new ArrayList<>();
+            int gam = unsortedArray.size() / availableProcessors;
+            for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+                arrayListsDivided.add(i, unsortedArray.subList(gam * i, gam * (i + 1)));
+            }
+            List<PartOFList> futureList = new ArrayList<>();
+            for (List<Integer> arrayList : arrayListsDivided) {
+                futureList.add(new PartOFList(arrayList));
+            }
+            service.invokeAll(futureList);
+            MergeKSortedArrays tester = new MergeKSortedArrays();
+            int[][] input = new int[availableProcessors][availableProcessors];
+            for (int j = 0; j < Runtime.getRuntime().availableProcessors(); j++) {
+                input[j] = Utils.toIntArray(arrayListsDivided.get(j));
+            }
+            System.out.println(Arrays.toString(tester.mergeKSortedArrays(input)));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.university.distributeddatabase.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -18,5 +19,11 @@ public class Utils {
 
     public static int coreNumbers() {
         return Runtime.getRuntime().availableProcessors();
+    }
+    public static int[] toIntArray(List<Integer> list){
+        int[] ret = new int[list.size()];
+        for(int i = 0;i < ret.length;i++)
+            ret[i] = list.get(i);
+        return ret;
     }
 }
