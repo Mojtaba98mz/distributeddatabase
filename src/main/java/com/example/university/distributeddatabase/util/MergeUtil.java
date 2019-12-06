@@ -1,17 +1,14 @@
 package com.example.university.distributeddatabase.util;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MergeUtil {
 
-    public static <T extends Comparable<? super T>> List<T> mergeSortedArray(ArrayList<ArrayList<T>> lists) {
+    public static <T extends Comparable<? super T>> void mergeSortedArray(ArrayList<ArrayList<T>> lists, ArrayList<T> result) {
         int totalSize = 0; // every element in the set
         for (ArrayList<T> l : lists) {
             totalSize += l.size();
         }
-
-        ArrayList<T> result = new ArrayList<T>(totalSize);
 
         ArrayList<T> lowest;
 
@@ -31,7 +28,5 @@ public class MergeUtil {
             result.add(lowest.get(0));
             lowest.remove(0);
         }
-
-        return result;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.university.distributeddatabase.controller;
 
-import com.example.university.distributeddatabase.util.MergeSort;
-import com.example.university.distributeddatabase.util.MergeUtil;
+import com.example.university.distributeddatabase.pojo.CoreTimePojo;
+import com.example.university.distributeddatabase.util.MergerThread;
 import com.example.university.distributeddatabase.util.SorterThread;
 import com.example.university.distributeddatabase.util.Utils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 @RestController
 public class ParallelSort {
 
     @RequestMapping(value = "/mergeAllSort", method = RequestMethod.GET)
-    public String mergeAllSort(@RequestParam("core") int core) throws ExecutionException, InterruptedException {
+    public List<CoreTimePojo> mergeAllSort(@RequestParam("core") int core) throws ExecutionException, InterruptedException {
 
         ArrayList<ArrayList<Integer>> dividedNumbers = new ArrayList<>();
 
@@ -29,22 +30,28 @@ public class ParallelSort {
             dividedNumbers.add(integers);
         }
 
+        // why core+1
         ExecutorService pool = Executors.newFixedThreadPool(core + 1);
-        Map<Integer, Future<Long>> executionTime = new HashMap<>();
 
+        List<CoreTimePojo> coreTimePojos = new ArrayList<>();
+
+        List<Callable<Long>> callables = new ArrayList<>();
         for (int i = 0; i < core; i++) {
             Callable<Long> callable = new SorterThread(dividedNumbers.get(i), i);
-            Future<Long> future = pool.submit(callable);
-            executionTime.put(i, future);
+            callables.add(callable);
+        }
+        List<Future<Long>> futures = pool.invokeAll(callables);
+
+        for (int i = 0; i < core; i++) {
+            coreTimePojos.add(new CoreTimePojo(i, futures.get(i).get()));
         }
 
-        for (Integer integer : executionTime.keySet()) {
-            System.out.println(integer + " " + executionTime.get(integer).get());
-        }
+        ArrayList<Integer> result = new ArrayList<>();
+        Callable<Long> callable = new MergerThread(dividedNumbers, 1, result);
+        Future<Long> future = pool.submit(callable);
+        Long mergeTime = future.get();
+        coreTimePojos.get(0).setExecutionTime(coreTimePojos.get(0).getExecutionTime() + mergeTime);
 
-        List<Integer> merged = MergeUtil.mergeSortedArray(dividedNumbers);
-
-        System.out.println(merged);
-        return "Merge All Sort";
+        return coreTimePojos;
     }
 }

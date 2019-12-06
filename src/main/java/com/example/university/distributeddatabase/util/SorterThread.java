@@ -17,11 +17,9 @@ public class SorterThread implements Callable<Long> {
     @Override
     public Long call() {
         Instant start = Instant.now();
-        System.out.println("Thread" + threadNumber + "===>start");
         MergeSort ms = new MergeSort(unSortList);
         ms.sortGivenArray();
         Instant finish = Instant.now();
-        System.out.println("Thread" + threadNumber + "===>end");
         return Duration.between(start, finish).toMillis();
     }
 }
