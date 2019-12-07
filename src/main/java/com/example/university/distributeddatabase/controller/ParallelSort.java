@@ -4,15 +4,13 @@ import com.example.university.distributeddatabase.pojo.CoreTimePojo;
 import com.example.university.distributeddatabase.util.MergerThread;
 import com.example.university.distributeddatabase.util.SorterThread;
 import com.example.university.distributeddatabase.util.Utils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+@CrossOrigin
 @RestController
 public class ParallelSort {
 

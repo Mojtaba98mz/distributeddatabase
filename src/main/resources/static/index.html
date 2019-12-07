@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Mojtaba Zamandi</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Distributed DataBase</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <form class="form-inline">
+            <div class="form-group col-md-4">
+                <label>Select Algorithm:</label>
+                <div class="radio">
+                    <label><input type="radio" name="optradio" checked>Merge All</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="optradio">Option 2</label>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="number">Cores:</label>
+                <input type="number" id="number" class="form-control" min="0" data-bind="value:number"/>
+            </div>
+            <div class="form-group col-md-4">
+                <button type="button" id="fetchData" class="btn btn-primary">Primary</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="main.js"></script>
+</body>
+</html>
