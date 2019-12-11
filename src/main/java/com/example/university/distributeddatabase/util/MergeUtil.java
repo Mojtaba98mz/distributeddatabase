@@ -1,32 +1,28 @@
 package com.example.university.distributeddatabase.util;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class MergeUtil {
 
-    public static <T extends Comparable<? super T>> void mergeSortedArray(ArrayList<ArrayList<T>> lists, ArrayList<T> result) {
+    public static void mergeSortedArray(ArrayList<LinkedList<Integer>> lists, LinkedList<Integer> result) {
         int totalSize = 0; // every element in the set
-        for (ArrayList<T> l : lists) {
+        for (LinkedList<Integer> l : lists) {
             totalSize += l.size();
         }
-
-        ArrayList<T> lowest;
-
+        LinkedList<Integer> lowest;
         while (result.size() < totalSize) { // while we still have something to add
             lowest = null;
-
-            for (ArrayList<T> l : lists) {
+            for (LinkedList<Integer> l : lists) {
                 if (!l.isEmpty()) {
                     if (lowest == null) {
                         lowest = l;
-                    } else if (l.get(0).compareTo(lowest.get(0)) <= 0) {
+                    } else if (l.getFirst().compareTo(lowest.getFirst()) <= 0) {
                         lowest = l;
                     }
                 }
             }
-
-            result.add(lowest.get(0));
-            lowest.remove(0);
+            result.addLast(lowest.removeFirst());
         }
     }
 }

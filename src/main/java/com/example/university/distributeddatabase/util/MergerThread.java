@@ -3,14 +3,15 @@ package com.example.university.distributeddatabase.util;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.Callable;
 
 public class MergerThread implements Callable<Long> {
-    private ArrayList<ArrayList<Integer>> toMergeLists;
+    private ArrayList<LinkedList<Integer>> toMergeLists;
     private Integer threadNumber;
-    private ArrayList<Integer> result;
+    private LinkedList<Integer> result;
 
-    public MergerThread(ArrayList<ArrayList<Integer>> toMergeLists, int threadNumber, ArrayList<Integer> result) {
+    public MergerThread(ArrayList<LinkedList<Integer>> toMergeLists, int threadNumber, LinkedList<Integer> result) {
         this.toMergeLists = toMergeLists;
         this.threadNumber = threadNumber;
         this.result = result;
