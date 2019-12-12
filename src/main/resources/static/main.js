@@ -14,7 +14,7 @@ let showChart = (dataSource) => {
         series: {
             argumentField: "coreNumber",
             valueField: "executionTime",
-            name: "My oranges",
+            name: "Cpu Cores",
             type: "bar",
             color: '#ffaa66'
         }
