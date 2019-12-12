@@ -17,7 +17,7 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Mojtaba Zamandi</a>
+            <a class="navbar-brand" href="#">Mojtaba Zamandi , Mehdi Tarekar</a>
         </div>
         <ul class="nav navbar-nav">
             <li class="active"><a href="#">Distributed DataBase</a></li>
@@ -34,7 +34,10 @@
                     <label><input type="radio" value="mergeAllSort" name="algorithm" checked>Merge All</label>
                 </div>
                 <div class="radio">
-                    <label><input type="radio" value="binaryMergeAllSort" name="algorithm">Option 2</label>
+                    <label><input type="radio" value="redistributionMergeAllSort" name="algorithm">Redistribution Merge All</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" value="parallelPartitionedSort" name="algorithm">Parallel Partitioned Sort</label>
                 </div>
             </div>
             <div class="form-group col-md-4">
@@ -42,7 +45,7 @@
                 <input type="number" id="number" class="form-control" min="1" data-bind="value:number"/>
             </div>
             <div class="form-group col-md-4">
-                <button type="button" id="fetchData" class="btn btn-primary">Primary</button>
+                <button type="button" id="fetchData" class="btn btn-primary">Compute</button>
             </div>
         </form>
     </div>
