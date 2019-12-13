@@ -1,7 +1,7 @@
 var baseUrl = "http://localhost:8080/";
 $('#fetchData').on('click', function (event) {
     let coreNumber = $('#number').val();
-    let algorithm = $("input[name='algorithm']:checked").val();
+    let algorithm = $("input[name='binaryMergeSort']:checked").val();
     $.get(baseUrl + algorithm + "?core=" + coreNumber, function (data, status) {
         showChart(data);
     });

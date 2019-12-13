@@ -4,15 +4,19 @@ import com.example.university.distributeddatabase.pojo.CoreTimePojo;
 import com.example.university.distributeddatabase.util.MergerThread;
 import com.example.university.distributeddatabase.util.SorterThread;
 import com.example.university.distributeddatabase.util.Utils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+
 import static com.example.university.distributeddatabase.util.Constant.MAX_NUMBER;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -138,6 +142,57 @@ public class ParallelSort {
             System.out.println(integers);
         }
         coreTimePojos.get(0).setExecutionTime(coreTimePojos.get(0).getExecutionTime() + redistributedTime);
+        return coreTimePojos;
+    }
+
+    @RequestMapping(value = "/binaryMergeSort", method = RequestMethod.GET)
+    public List<CoreTimePojo> binaryMergeSort(@RequestParam("core") int core) throws ExecutionException, InterruptedException {
+        ArrayList<ArrayList<Integer>> dividedNumbers = new ArrayList<>();
+        ArrayList<Integer> randomNumbers = Utils.getRandomNumbers();
+        int divide = randomNumbers.size() / core;
+        for (int i = 0; i < randomNumbers.size(); i += divide) {
+            if (i + divide > randomNumbers.size()) {
+                dividedNumbers.get(dividedNumbers.size() - 1).addAll(randomNumbers.subList(i, randomNumbers.size()));
+                break;
+            }
+            ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, i + divide));
+            dividedNumbers.add(integers);
+        }
+        ExecutorService pool = Executors.newFixedThreadPool(core + 1);
+        List<CoreTimePojo> coreTimePojos = new ArrayList<>();
+        List<Callable<Long>> callables = new ArrayList<>();
+        for (int i = 0; i < core; i++) {
+            Callable<Long> callable = new SorterThread(dividedNumbers.get(i), i);
+            callables.add(callable);
+        }
+        List<Future<Long>> futures = pool.invokeAll(callables);
+        for (int i = 0; i < core; i++) {
+            coreTimePojos.add(new CoreTimePojo(i, futures.get(i).get(), i));
+        }
+        LinkedList<Integer> result = new LinkedList<>();
+        ArrayList<ArrayList<Integer>> temp = new ArrayList<>();
+        double level = Math.log(core) / Math.log(2);
+        ArrayList<LinkedList<Integer>> binaryList = new ArrayList<>();
+        float coreLevel = core;
+        for (int j = 0; j < level; j++) {
+            for (int i = 0; i < coreLevel / 2; i++) {
+                if (dividedNumbers.size() > i * 2 + 1) {
+                    binaryList.add(new LinkedList<>(dividedNumbers.get(i * 2)));
+                    binaryList.add(new LinkedList<>(dividedNumbers.get(i * 2 + 1)));
+                    Long mergeTime = pool.submit(new MergerThread(binaryList, i * 2, result)).get();
+                    coreTimePojos.get(i * 2).setExecutionTime(coreTimePojos.get(i * 2).getExecutionTime() + mergeTime);
+                    temp.add(new ArrayList<>(result));
+                } else {
+                    temp.add(new ArrayList<>(dividedNumbers.get(i * 2)));
+                }
+                binaryList = new ArrayList<>();
+                result = new LinkedList<>();
+            }
+            coreLevel = coreLevel / 2;
+            dividedNumbers = new ArrayList<>(temp);
+            temp = new ArrayList<>();
+
+        }
         return coreTimePojos;
     }
 }
