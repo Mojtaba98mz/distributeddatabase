@@ -46,11 +46,38 @@ let showChart = (dataSource) => {
         dataSource: dataSource,
         series: {
             argumentField: "coreNumber",
+            hoverMode: "allArgumentPoints",
             valueField: "executionTime",
             name: "Cpu Cores",
             type: "bar",
-            color: '#ffaa66'
+            color: '#ff7e57',
+            label: {
+                visible: true,
+                format: {
+                    type: "fixedPoint",
+                    precision: 0,
+                    color: '#ff0300'
+                }
+            }
+        },
+        legend: {
+            verticalAlignment: "bottom",
+            horizontalAlignment: "center"
+        },
+        "export": {
+            enabled: true
+        },
+        onPointClick: function (e) {
+            debugger;
+            e.target.select();
+        },
+        valueAxis: {
+            title: {
+                text: "milliseconds"
+            },
+            position: "left"
         }
+
     });
 }
 ;
