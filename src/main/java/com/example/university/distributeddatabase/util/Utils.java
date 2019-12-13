@@ -11,7 +11,7 @@ public class Utils {
 
     static {
         Random random = new Random();
-        randomNumbers = (ArrayList<Integer>) random.ints(0, 10000).limit(1000000).boxed().collect(Collectors.toList());
+        randomNumbers = (ArrayList<Integer>) random.ints(0, MAX_NUMBER).limit(20).boxed().collect(Collectors.toList());
     }
 
     public static ArrayList<Integer> getRandomNumbers() {

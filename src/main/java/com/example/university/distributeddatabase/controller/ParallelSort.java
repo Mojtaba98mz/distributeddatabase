@@ -195,4 +195,111 @@ public class ParallelSort {
         }
         return coreTimePojos;
     }
+
+    @RequestMapping(value = "/redistributionBinaryMergeSort", method = RequestMethod.GET)
+    public List<CoreTimePojo> redistributionBinaryMergeSort(@RequestParam("core") int core) throws ExecutionException, InterruptedException {
+        ArrayList<ArrayList<Integer>> dividedNumbers = new ArrayList<>();
+        ArrayList<Integer> randomNumbers = Utils.getRandomNumbers();
+        int divide = randomNumbers.size() / core;
+        for (int i = 0; i < randomNumbers.size(); i += divide) {
+            if (i + divide > randomNumbers.size()) {
+                dividedNumbers.get(dividedNumbers.size() - 1).addAll(randomNumbers.subList(i, randomNumbers.size()));
+                break;
+            }
+            ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, i + divide));
+            dividedNumbers.add(integers);
+        }
+        ExecutorService pool = Executors.newFixedThreadPool(core + 1);
+        List<CoreTimePojo> coreTimePojos = new ArrayList<>();
+        List<Callable<Long>> callables = new ArrayList<>();
+
+
+        /////////////////////////////////////////////////////////////////
+        /*local sort*/
+        for (int i = 0; i < core; i++) {
+            Callable<Long> callable = new SorterThread(dividedNumbers.get(i), i);
+            callables.add(callable);
+        }
+        List<Future<Long>> futures = pool.invokeAll(callables);
+        for (int i = 0; i < core; i++) {
+            coreTimePojos.add(new CoreTimePojo(i, futures.get(i).get(), i));
+        }
+
+
+        //////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////
+        /*redistributionBinary*/
+        ArrayList<ArrayList<Integer>> redistributedArray = new ArrayList<>();
+        for (int i = 0; i < core; i++) {
+            ArrayList<Integer> redisArray = new ArrayList<>(divide);
+            redistributedArray.add(redisArray);
+        }
+        Long redistributedTime = 0l;
+
+        int range = MAX_NUMBER / 2;
+        for (int i = 0; i < core / 2; i++) {
+
+            Instant start = Instant.now();
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.addAll(dividedNumbers.get(2 * i));
+            temp.addAll(dividedNumbers.get(2 * i + 1));
+            for (Integer integer : temp) {
+                int index = integer / range;
+                redistributedArray.get(index + 2 * i).add(integer);
+            }
+            Instant finish = Instant.now();
+            redistributedTime += Duration.between(start, finish).toMillis();
+            coreTimePojos.get(2 * i).setExecutionTime(coreTimePojos.get(2 * i).getExecutionTime() + redistributedTime);
+
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        /*local sort*/
+        for (int i = 0; i < core; i++) {
+            Callable<Long> callable = new SorterThread(redistributedArray.get(i), i);
+            callables.add(callable);
+        }
+        List<Future<Long>> futures1 = pool.invokeAll(callables);
+        for (int i = 0; i < core; i++) {
+            coreTimePojos.get(i).setExecutionTime(coreTimePojos.get(i).getExecutionTime() + futures1.get(i).get());
+        }
+        ////////////////////////////////////////////////////////////////////////////////
+
+
+        ////////////////////////////////////////////////////////////////////////////////
+        /*redistributionBinary*/
+        redistributedTime = 0l;
+        ArrayList<ArrayList<Integer>> redistributedArrayAll = new ArrayList<>();
+        for (int i = 0; i < core; i++) {
+            ArrayList<Integer> redisArray = new ArrayList<>(divide);
+            redistributedArrayAll.add(redisArray);
+        }
+        range = MAX_NUMBER / core;
+        for (int i = 0; i < core; i++) {
+
+            Instant start = Instant.now();
+            for (Integer integer : redistributedArray.get(i)) {
+                int index = integer / range;
+                redistributedArrayAll.get(index).add(integer);
+            }
+            Instant finish = Instant.now();
+            redistributedTime += Duration.between(start, finish).toMillis();
+            coreTimePojos.get(i).setExecutionTime(coreTimePojos.get(i).getExecutionTime() + futures1.get(i).get());
+
+        }
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        /*local sort*/
+        for (int i = 0; i < core; i++) {
+            Callable<Long> callable = new SorterThread(redistributedArrayAll.get(i), i);
+            callables.add(callable);
+        }
+        List<Future<Long>> futures2 = pool.invokeAll(callables);
+        for (int i = 0; i < core; i++) {
+            coreTimePojos.get(i).setExecutionTime(coreTimePojos.get(i).getExecutionTime() + futures2.get(i).get());
+        }
+        ////////////////////////////////////////////////////////////////////////////////
+        return coreTimePojos;
+    }
 }
