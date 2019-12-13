@@ -28,39 +28,26 @@
 <div class="container">
     <div class="row">
         <form class="form-inline">
-            <div class="form-group col-md-4">
-                <label>Select Algorithm:</label>
-                <div class="radio">
-                    <label><input type="radio" value="mergeAllSort" name="algorithm" checked>Merge All</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" value="redistributionMergeAllSort" name="algorithm" checked>Redistribution Merge All</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" value="parallelPartitionedSort" name="algorithm" checked>Parallel Partitioned Sort</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" value="binaryMergeSort" name="algorithm" checked>binaryMergeSort</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" value="redistributionBinaryMergeSort" name="algorithm" checked>redistributionBinaryMergeSort</label>
-                </div>
+            <div class="form-group col-md-5">
+                <label for="Cores">algorithm:</label>
+                <div id="algorithm"></div>
             </div>
-            <div class="form-group col-md-4">
-                <label for="number">Cores:</label>
-                <input type="number" id="number" class="form-control" min="0" data-bind="value:number"/>
+            <div class="form-group col-md-5">
+                <label for="Cores">Cores:</label>
+                <div id="Cores"></div>
             </div>
-            <div class="form-group col-md-4">
-                <button type="button" id="fetchData" class="btn btn-primary">Primary</button>
+            <div class="form-group col-md-2">
+                <button type="button" id="fetchData" class="btn btn-primary">calculate</button>
             </div>
         </form>
-    </div>
-
-    <div class="row">
-        <div class="demo-container">
-            <div id="chart"></div>
+        <div>
+            <div class="demo-container">
+                <div id="chart"></div>
+            </div>
         </div>
     </div>
+
+
 </div>
 <script src="main.js"></script>
 </body>
