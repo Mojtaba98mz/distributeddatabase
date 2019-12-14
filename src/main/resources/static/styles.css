@@ -1,3 +1,7 @@
 #chart {
     height: 440px;
 }
+
+.dx-texteditor {
+    display: inline-block;
+}

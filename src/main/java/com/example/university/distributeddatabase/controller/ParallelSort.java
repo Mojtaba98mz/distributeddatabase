@@ -29,8 +29,13 @@ public class ParallelSort {
         ArrayList<Integer> randomNumbers = Utils.getRandomNumbers();
         int divide = randomNumbers.size() / core;
         for (int i = 0; i < randomNumbers.size(); i += divide) {
-            ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, i + divide));
-            dividedArrayListNumbers.add(integers);
+            if (!(i + divide > randomNumbers.size())) {
+                ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, i + divide));
+                dividedArrayListNumbers.add(integers);
+            } else {
+                ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, randomNumbers.size()));
+                dividedArrayListNumbers.add(integers);
+            }
         }
         ExecutorService pool = Executors.newFixedThreadPool(core);
         List<CoreTimePojo> coreTimePojos = new ArrayList<>();
@@ -59,8 +64,13 @@ public class ParallelSort {
         ArrayList<Integer> randomNumbers = Utils.getRandomNumbers();
         int divide = randomNumbers.size() / core;
         for (int i = 0; i < randomNumbers.size(); i += divide) {
-            ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, i + divide));
-            dividedArrayListNumbers.add(integers);
+            if (!(i + divide > randomNumbers.size())) {
+                ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, i + divide));
+                dividedArrayListNumbers.add(integers);
+            } else {
+                ArrayList<Integer> integers = new ArrayList<>(randomNumbers.subList(i, randomNumbers.size()));
+                dividedArrayListNumbers.add(integers);
+            }
         }
         ExecutorService pool = Executors.newFixedThreadPool(core);
         List<CoreTimePojo> coreTimePojos = new ArrayList<>();
