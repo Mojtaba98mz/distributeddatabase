@@ -41,6 +41,7 @@ $('#fetchData').on('click', function (event) {
         $('#parentpie').addClass('piestyle');
         showChart(data);
         showPie(data);
+
     });
 });
 
