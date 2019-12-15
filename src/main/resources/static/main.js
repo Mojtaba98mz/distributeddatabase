@@ -36,6 +36,9 @@ $('#fetchData').on('click', function (event) {
     let coreNumber = $("#Cores").dxSelectBox('instance').option('value').value;
     let algorithm = $("#algorithm").dxSelectBox('instance').option('value').value;
     $.get(baseUrl + algorithm + "?core=" + coreNumber, function (data, status) {
+        debugger;
+        $('#parentChart').addClass('chartstyle');
+        $('#parentpie').addClass('piestyle');
         showChart(data);
         showPie(data);
     });
@@ -45,6 +48,7 @@ $('#fetchData').on('click', function (event) {
 let showChart = (dataSource) => {
     $("#chart").dxChart({
         dataSource: dataSource,
+        argumentField: "coreNumber",
         series: {
             argumentField: "coreNumber",
             hoverMode: "allArgumentPoints",

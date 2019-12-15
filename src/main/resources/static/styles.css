@@ -8,3 +8,13 @@
 .dx-texteditor {
     display: inline-block;
 }
+.chartstyle{
+    border: solid;
+    margin-top: 2px;
+}
+.piestyle
+{
+    border: solid;
+    height: 386px;
+    margin-top: 2px;
+}
