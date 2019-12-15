@@ -51,13 +51,13 @@ let showChart = (dataSource) => {
             valueField: "executionTime",
             name: "Cpu Cores",
             type: "bar",
-            color: '#ff7e57',
+            color: '#ff0000',
             label: {
                 visible: true,
                 format: {
                     type: "fixedPoint",
                     precision: 0,
-                    color: '#ff0300'
+                    color: '#ff0000'
                 }
             }
         },
@@ -120,6 +120,8 @@ let showPie = (dataSource) => {
                     format: "percent",
                     connector: {
                         visible: true,
+                        horizontalAlignment: "center",
+                        verticalAlignment: "bottom",
                         width: 1
                     },
                     customizeText: function(arg) {
