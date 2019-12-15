@@ -11,6 +11,7 @@
 .chartstyle{
     border: solid;
     margin-top: 2px;
+    border-radius: 10px;
 
 }
 .piestyle
@@ -18,4 +19,5 @@
     border: solid;
     height: 386px;
     margin-top: 2px;
+    border-radius: 10px;
 }
