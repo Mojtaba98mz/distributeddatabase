@@ -32,11 +32,12 @@ var algorithm = [{
     "Name": "redistributionBinaryMergeSort"
 }];
 $('#fetchData').on('click', function (event) {
-    debugger;
+    
     let coreNumber = $("#Cores").dxSelectBox('instance').option('value').value;
     let algorithm = $("#algorithm").dxSelectBox('instance').option('value').value;
     $.get(baseUrl + algorithm + "?core=" + coreNumber, function (data, status) {
         showChart(data);
+        showPie(data);
     });
 });
 
@@ -67,10 +68,6 @@ let showChart = (dataSource) => {
         "export": {
             enabled: true
         },
-        onPointClick: function (e) {
-            debugger;
-            e.target.select();
-        },
         valueAxis: {
             title: {
                 text: "milliseconds"
@@ -95,3 +92,45 @@ $(function () {
         searchEnabled: true
     }).dxSelectBox("instance");
 });
+
+
+
+let showPie = (dataSource) => {
+    debugger
+    var all=0;
+    var x;
+    dataSource.forEach(function (arrayItem) {
+        all = all+arrayItem.executionTime;
+    });
+
+    dataSource.forEach(function (arrayItem) {
+        arrayItem.percent= (arrayItem.executionTime/all);
+
+    });
+    debugger
+    $("#pie").dxPieChart({
+        palette: "bright",
+        dataSource: dataSource,
+        series: [
+            {
+                argumentField: "coreNumber",
+                valueField: "percent",
+                label: {
+                    visible: true,
+                    format: "percent",
+                    connector: {
+                        visible: true,
+                        width: 1
+                    },
+                    customizeText: function(arg) {
+                        return arg.valueText + " ( cpu =" + arg.argument + ")";
+                    }
+                }
+            }
+        ],
+        title: "cpu work",
+        "export": {
+            enabled: true
+        }
+    });
+}

@@ -1,6 +1,12 @@
 #chart {
     height: 440px;
 }
+#pie {
+    height: 500px;
+    width: 1100px;
+    margin-top: 37px;
+    margin-left: 78px;
+}
 
 .dx-texteditor {
     display: inline-block;

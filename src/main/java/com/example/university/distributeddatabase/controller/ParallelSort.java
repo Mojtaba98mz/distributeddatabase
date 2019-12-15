@@ -1,14 +1,32 @@
 package com.example.university.distributeddatabase.controller;
 
 import com.example.university.distributeddatabase.pojo.CoreTimePojo;
+import com.example.university.distributeddatabase.util.FileStorageService;
 import com.example.university.distributeddatabase.util.MergerThread;
 import com.example.university.distributeddatabase.util.SorterThread;
 import com.example.university.distributeddatabase.util.Utils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
+
 import static com.example.university.distributeddatabase.util.Constant.MAX_NUMBER;
 
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,6 +39,9 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RestController
 public class ParallelSort {
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @RequestMapping(value = "/mergeAllSort", method = RequestMethod.GET)
     public List<CoreTimePojo> mergeAllSort(@RequestParam("core") int core) throws ExecutionException, InterruptedException {
@@ -85,7 +106,7 @@ public class ParallelSort {
             ArrayList<Integer> redisArray = new ArrayList<>(divide);
             redistributedArray.add(redisArray);
         }
-        int range = MAX_NUMBER / core;
+        int range = Math.round((float) MAX_NUMBER / core);
         Long redistributedTime = 0l;
         for (int i = 0; i < core; i++) {
             coreTimePojos.add(new CoreTimePojo(i, futures.get(i).get()));
@@ -128,7 +149,7 @@ public class ParallelSort {
             ArrayList<Integer> redisArray = new ArrayList<>(divide);
             redistributedArray.add(redisArray);
         }
-        int range = MAX_NUMBER / core;
+        int range = Math.round((float) MAX_NUMBER / core);
         Long redistributedTime = 0l;
         for (int i = 0; i < core; i++) {
             Instant start = Instant.now();
@@ -246,7 +267,7 @@ public class ParallelSort {
         }
         Long redistributedTime = 0l;
 
-        int range = MAX_NUMBER / 2;
+        int range = Math.round((float) MAX_NUMBER / 2);
         for (int i = 0; i < core / 2; i++) {
 
             Instant start = Instant.now();
@@ -285,7 +306,9 @@ public class ParallelSort {
             ArrayList<Integer> redisArray = new ArrayList<>(divide);
             redistributedArrayAll.add(redisArray);
         }
-        range = MAX_NUMBER / core;
+
+
+        range = Math.round((float)MAX_NUMBER / core);
         for (int i = 0; i < core; i++) {
 
             Instant start = Instant.now();
@@ -311,5 +334,24 @@ public class ParallelSort {
         }
         ////////////////////////////////////////////////////////////////////////////////
         return coreTimePojos;
+    }
+
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
+    @ResponseBody
+    public void downloadFile(@RequestParam("core") int core, HttpServletResponse response) throws IOException, URISyntaxException {
+        File file = new File("C:\\new\\test.txt");
+        FileUtils.writeStringToFile(file, "3333");
+        InputStream in = new FileInputStream(file); // My service to get the stream.
+        response.setContentType(MediaType.TEXT_PLAIN);
+        response.setHeader("Content-Transfer-Encoding", "binary");
+        response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+        try {
+            IOUtils.copy(in, response.getOutputStream()); //Apache commons IO.
+            in.close();
+            response.flushBuffer();
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            //log error.
+        }
     }
 }
