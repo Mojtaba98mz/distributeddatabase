@@ -30,11 +30,35 @@ var algorithm = [{
 }, {
     "value": "redistributionBinaryMergeSort",
     "Name": "redistributionBinaryMergeSort"
+}, {
+    "value": "spark",
+    "Name": "spark"
+}];
+var sparkValue = [{
+    "value": "count_spark",
+    "Name": "count_spark"
+},
+    {
+        "value": "search_spark",
+        "Name": "search_spark"
+    }];
+var word = [{
+    "value": "word",
+    "Name": "error"
+}, {
+    "value": "word",
+    "Name": "log"
+}, {
+    "value": "word",
+    "Name": "hello"
 }];
 $('#fetchData').on('click', function (event) {
-    
+    $("#simple").dxTextBox({
+        value: "John Smith"
+    });
     let coreNumber = $("#Cores").dxSelectBox('instance').option('value').value;
     let algorithm = $("#algorithm").dxSelectBox('instance').option('value').value;
+    debugger
     $.get(baseUrl + algorithm + "?core=" + coreNumber, function (data, status) {
         debugger;
         $('#parentChart').addClass('chartstyle');
@@ -44,9 +68,45 @@ $('#fetchData').on('click', function (event) {
 
     });
 });
+$('#spark_button').on('click', function (event) {
+    debugger
+    var wordSearach = $("#spark").dxSelectBox('instance').option('value').value;
+    let url;
+    if (wordSearach == 'search_spark') {
+        url = baseUrl + "sparkSearch"+ "?wordSearch=" + wordSearach;
+    }
+    else {
+        url=baseUrl + "sparkCount";
+    }
 
+    $.get(url, function (data, status) {
+        $('#parentChart').addClass('chartstyle');
+        // $('#parentpie').addClass('piestyle');
+        debugger
+        showDataTable(data);
 
-let showChart = (dataSource) => {
+    });
+});
+var test = [{"number": "1", "wordName": "a"}, {"number": "1", "wordName": "b"}, {"number": "1", "wordName": "c"}];
+
+let showDataTable = (dataSource) =>
+{
+    $("#chart").dxDataGrid({
+        dataSource: dataSource,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        columns: ["wordName", "number"]
+    });
+}
+let showChart = (dataSource) =>
+{
     $("#chart").dxChart({
         dataSource: dataSource,
         argumentField: "coreNumber",
@@ -82,7 +142,6 @@ let showChart = (dataSource) => {
 
     });
 }
-;
 $(function () {
     var Cores = $("#Cores").dxSelectBox({
         dataSource: coreNumber,
@@ -97,22 +156,36 @@ $(function () {
         searchEnabled: true
     }).dxSelectBox("instance");
 });
+$(function () {
+    var Cores = $("#spark").dxSelectBox({
+        dataSource: sparkValue,
+        displayExpr: "Name",
+        searchEnabled: true
+    }).dxSelectBox("instance");
+});
+$(function () {
+    var Cores = $("#word").dxSelectBox({
+        dataSource: word,
+        displayExpr: "Name",
+        searchEnabled: true
+    }).dxSelectBox("instance");
+});
 
 
+let showPie = (dataSource) =>
+{
 
-let showPie = (dataSource) => {
-    debugger
-    var all=0;
+    var all = 0;
     var x;
     dataSource.forEach(function (arrayItem) {
-        all = all+arrayItem.executionTime;
+        all = all + arrayItem.executionTime;
     });
 
     dataSource.forEach(function (arrayItem) {
-        arrayItem.percent= (arrayItem.executionTime/all);
+        arrayItem.percent = (arrayItem.executionTime / all);
 
     });
-    debugger
+
     $("#pie").dxPieChart({
         palette: "bright",
         dataSource: dataSource,
@@ -129,7 +202,7 @@ let showPie = (dataSource) => {
                         verticalAlignment: "bottom",
                         width: 1
                     },
-                    customizeText: function(arg) {
+                    customizeText: function (arg) {
                         return arg.valueText + " ( cpu =" + arg.argument + ")";
                     }
                 }

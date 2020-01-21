@@ -1,18 +1,24 @@
 package com.example.university.distributeddatabase.controller;
 
 import com.example.university.distributeddatabase.pojo.CoreTimePojo;
-import com.example.university.distributeddatabase.util.FileStorageService;
+import com.example.university.distributeddatabase.pojo.MyTuple;
+import com.example.university.distributeddatabase.service.WordCountService;
 import com.example.university.distributeddatabase.util.MergerThread;
 import com.example.university.distributeddatabase.util.SorterThread;
 import com.example.university.distributeddatabase.util.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import scala.Tuple2;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -40,8 +43,6 @@ import java.util.stream.Collectors;
 @RestController
 public class ParallelSort {
 
-    @Autowired
-    private FileStorageService fileStorageService;
 
     @RequestMapping(value = "/mergeAllSort", method = RequestMethod.GET)
     public List<CoreTimePojo> mergeAllSort(@RequestParam("core") int core) throws ExecutionException, InterruptedException {
@@ -308,7 +309,7 @@ public class ParallelSort {
         }
 
 
-        range = Math.round((float)MAX_NUMBER / core);
+        range = Math.round((float) MAX_NUMBER / core);
         for (int i = 0; i < core; i++) {
 
             Instant start = Instant.now();
@@ -354,4 +355,19 @@ public class ParallelSort {
             //log error.
         }
     }
+
+    @Autowired
+    WordCountService service;
+
+    @RequestMapping(value = "/sparkSearch", method = RequestMethod.GET)
+    public List<MyTuple> spark(@RequestParam("wordSearch") String wordsearach) {
+        return service.search(wordsearach);
+    }
+
+    @RequestMapping(value = "/sparkCount", method = RequestMethod.GET)
+    public List<MyTuple> spark() {
+        return service.spark();
+
+    }
 }
+
